@@ -15,8 +15,9 @@ const express         = require("express"),
 const indexRoutes       = require("./routes/index"),
       campgroundRoutes  = require("./routes/campgrounds"),
       commentRoutes     = require("./routes/comments");
- 
-mongoose.connect(process.env.DBURL, {useNewUrlParser: true, useUnifiedTopology: true});
+
+const dbUrl = process.env.DBURL || "mongodb://localhost:27017/yelp_camp";
+mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
