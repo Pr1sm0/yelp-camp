@@ -1,8 +1,8 @@
-const express  = require("express"),
-      mongoose = require("mongoose");
-const router = express.Router();
-const Campground = require("../models/campground");
-const middleware = require("../middleware");
+const express       = require("express"),
+      mongoose      = require("mongoose"),
+      router        = express.Router(),
+      Campground    = require("../models/campground"),
+      middleware    = require("../middleware");
 
 mongoose.set('useFindAndModify', false);
 
@@ -76,7 +76,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
         if(err){
             res.redirect("/campgrounds");
         } else {
-            res.redirect("/campgrounds/" + req.params.id);
+            res.redirect(`/campgrounds/${req.params.id}`);
         }
     });
 });

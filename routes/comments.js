@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router({mergeParams: true});
-const Campground = require("../models/campground");
-const Comment = require("../models/comment");
-const middleware = require("../middleware");
+const express       = require("express"),
+      router        = express.Router({mergeParams: true}),
+      Campground    = require("../models/campground"),
+      Comment       = require("../models/comment"),
+      middleware    = require("../middleware");
 
 //================
 //COMMENTS ROUTES
@@ -72,7 +72,7 @@ router.put("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
         if(err){
             res.redirect("back");
         } else {
-            res.redirect("/campgrounds/" + req.params.id);
+            res.redirect(`/campgrounds/${req.params.id}`);
         }
     });
 });
@@ -84,7 +84,7 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
             res.redirect("back");
         } else {
             req.flash("success", "Comment deleted");
-            res.redirect("/campgrounds/" + req.params.id);
+            res.redirect(`/campgrounds/${req.params.id}`);
         }
     });
 });
