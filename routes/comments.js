@@ -1,7 +1,7 @@
-const express                                           = require("express"),
-      router                                            = express.Router({mergeParams: true}),
-      Campground                                        = require("../models/campground"),
-      Comment                                           = require("../models/comment"),
+const express                                        = require("express"),
+      router                                         = express.Router({mergeParams: true}),
+      Campground                                     = require("../models/campground"),
+      Comment                                        = require("../models/comment"),
       { checkCommentOwnership, isLoggedIn, isPaid }  = require("../middleware");
 
 router.use(isLoggedIn, isPaid);
