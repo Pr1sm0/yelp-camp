@@ -1,7 +1,7 @@
-const express                       = require("express"),
-      mongoose                      = require("mongoose"),
-      router                        = express.Router(),
-      Campground                    = require("../models/campground"),
+const express                                           = require("express"),
+      mongoose                                          = require("mongoose"),
+      router                                            = express.Router(),
+      Campground                                        = require("../models/campground"),
       { checkCampgroundOwnership, isLoggedIn, isPaid }  = require("../middleware");
 router.use(isLoggedIn, isPaid);
 mongoose.set('useFindAndModify', false);
