@@ -6,8 +6,17 @@ middlewareObj.isLoggedIn = (req, res, next) => {
     if(req.isAuthenticated()){
         return next();
     }
+    if(req['headers']['content-type'] === 'application/json'){
+        return req.send({ error: 'Login required' });
+    }
     req.flash("warning", "You need to be logged in to do that");
     res.redirect("/login");
+}
+
+middlewareObj.isPaid = (req, res, next) => {
+    if (req.user.isPaid) return next();
+    req.flash("warning", "Please pay registration fee before continuing");
+    res.redirect("/checkout");
 }
 
 middlewareObj.checkCampgroundOwnership = (req, res, next) => {
