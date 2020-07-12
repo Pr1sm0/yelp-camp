@@ -1,6 +1,7 @@
+require('dotenv').config();
+
 const express         = require("express"),
       app             = express(),
-      bodyParser      = require("body-parser"),
       Campground      = require("./models/campground"),
       Comment         = require("./models/comment"),
       mongoose        = require("mongoose"),
@@ -21,7 +22,8 @@ const dbUrl = process.env.DBURL || "mongodb://localhost:27017/yelp_camp",
 
 mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");

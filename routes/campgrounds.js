@@ -1,13 +1,14 @@
-const express       = require("express"),
-      mongoose      = require("mongoose"),
-      router        = express.Router(),
-      Campground    = require("../models/campground"),
-      middleware    = require("../middleware");
-
+const express                       = require("express"),
+      mongoose                      = require("mongoose"),
+      router                        = express.Router(),
+      Campground                    = require("../models/campground"),
+      { checkCampgroundOwnership, isLoggedIn, isPaid }  = require("../middleware");
+router.use(isLoggedIn, isPaid);
 mongoose.set('useFindAndModify', false);
 
 //INDEX - show all campgrounds
 router.get("/", (req,res) => {
+    if(req.query.paid) res.locals.success = 'Payment succeeded, welcome to YelpCamp!';
     Campground.find({}, (err, allCampgrounds) => {
         if(err){
             console.log(err);
@@ -17,8 +18,8 @@ router.get("/", (req,res) => {
     });
 });
 
-//CREATE
-router.post("/", middleware.isLoggedIn, (req,res) => {
+//CREATE - add new campground to DB
+router.post("/", (req,res) => {
     const name = req.body.name;
     const price = req.body.price;
     const image = req.body.image;
@@ -38,13 +39,14 @@ router.post("/", middleware.isLoggedIn, (req,res) => {
     });
 });
 
-//NEW 
-router.get("/new", middleware.isLoggedIn, (req,res) => {
+//NEW - show form to create new campgrond
+router.get("/new", (req,res) => {
     res.render("campgrounds/new");
 });
 
-//SHOW
+//SHOW - shows more info about one campground
 router.get("/:id", (req,res) => {
+    //fing  the campground with provided ID
     Campground.findById(req.params.id).populate("comments").exec((err, foundCampground) => {
         if(err || !foundCampground){
             req.flash("error", "Campground not found");
@@ -57,7 +59,7 @@ router.get("/:id", (req,res) => {
 });
 
 // EDIT CAMPGROUND ROUTE
-router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
+router.get("/:id/edit", checkCampgroundOwnership, (req, res) => {
     Campground.findById(req.params.id, (err, foundCampground) => {
         if(err){
             req.flash("error", "Campground not found");
@@ -69,7 +71,7 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
 });
 
 // UPDATE CAMPGROUND ROUTE
-router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
+router.put("/:id", checkCampgroundOwnership, (req, res) => {
     //find and update the correct campground
     //redirect somewhere (show page)
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
@@ -82,7 +84,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
 });
 
 // DESTROY CAMPGROUND ROUTE
-router.delete("/:id", middleware.checkCampgroundOwnership, async(req, res) => {
+router.delete("/:id", checkCampgroundOwnership, async(req, res) => {
     try {
       let foundCampground = await Campground.findById(req.params.id);
       await foundCampground.remove();
