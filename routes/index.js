@@ -25,7 +25,7 @@ router.get("/register", (req, res) => {
 // handle sign up logic
 router.post("/register", (req, res) => {
     const newUser = new User({username: req.body.username});
-    if(req.body.adminCode === 'itwasmedio'){
+    if(req.body.adminCode === process.env.ADMIN_CODE){
         newUser.isAdmin = true;
     }
     User.register(newUser, req.body.password, (err, user) => {
