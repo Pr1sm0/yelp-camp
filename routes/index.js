@@ -25,6 +25,9 @@ router.get("/register", (req, res) => {
 // handle sign up logic
 router.post("/register", (req, res) => {
     const newUser = new User({username: req.body.username});
+    if(req.body.adminCode === 'itwasmedio'){
+        newUser.isAdmin = true;
+    }
     User.register(newUser, req.body.password, (err, user) => {
         if(err){
             console.log(err);
@@ -59,7 +62,7 @@ router.get("/logout", (req, res) => {
 
 // GET checkout
 router.get('/checkout', isLoggedIn, (req, res) => {
-    if (req.user.isPaid) {
+    if(req.user.isPaid) {
         req.flash('success', 'Your account is already paid');
         return res.redirect('/campgrounds');
     }
