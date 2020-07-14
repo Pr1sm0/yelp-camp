@@ -17,6 +17,8 @@ const indexRoutes       = require("./routes/index"),
       campgroundRoutes  = require("./routes/campgrounds"),
       commentRoutes     = require("./routes/comments");
 
+app.locals.moment = require('moment');
+
 const dbUrl = process.env.DBURL || process.env.LOCAL_DB_URL,
       port  = process.env.PORT || 3000;
 
