@@ -2,6 +2,7 @@ const express        = require("express"),
       router         = express.Router(),
       passport       = require("passport"),
       User           = require("../models/user"),
+      Campground     = require("../models/campground"),
       { isLoggedIn } = require('../middleware');
 
 // Set your secret key. Remember to switch to your live secret key in production!
@@ -24,7 +25,14 @@ router.get("/register", (req, res) => {
 
 // handle sign up logic
 router.post("/register", (req, res) => {
-    const newUser = new User({username: req.body.username});
+    const newUser = new User({
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        avatar: req.body.avatar
+    });
+
     if(req.body.adminCode === process.env.ADMIN_CODE){
         newUser.isAdmin = true;
     }
@@ -58,6 +66,23 @@ router.get("/logout", (req, res) => {
     req.logout();
     req.flash("info", "You are logged out");
     res.redirect("/campgrounds");
+});
+
+// user profile
+router.get("/users/:id", (req, res) => {
+    User.findById(req.params.id, function(err, foundUser) {
+        if(err) {
+            req.flash("error", "Something went wrong.");
+            return res.redirect("/");
+        }
+        Campground.find().where('author.id').equals(foundUser._id).exec(function(err, campgrounds) {
+            if(err) {
+                req.flash("error", "Something went wrong.");
+                return res.redirect("/");
+            }
+            res.render("users/show", {user: foundUser, campgrounds: campgrounds});
+        });
+    });
 });
 
 // GET checkout
