@@ -126,7 +126,7 @@ router.post('/forgot', function(req, res, next) {
       if (err) return next(err);
       res.redirect('/forgot');
     });
-  });
+});
   
 router.get('/reset/:token', function(req, res) {
     User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
