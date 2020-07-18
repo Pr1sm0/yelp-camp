@@ -22,7 +22,7 @@ app.locals.moment = require('moment');
 const dbUrl = process.env.DBURL || process.env.LOCAL_DB_URL,
       port  = process.env.PORT || 3000;
 
-mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(dbUrl, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

@@ -1,15 +1,16 @@
 const mongoose              = require("mongoose"),
-      passportLocalMongoose = require("passport-local-mongoose"),
-      passport              = require("passport");
+      passportLocalMongoose = require("passport-local-mongoose");
 
 const UserSchema = new mongoose.Schema({
-    username: String,
+    username: {type: String, unique: true, required: true},
     password: String,
     avatar: String,
     firstName: String,
     lastName: String,
-    email: String,
+    email: {type: String, unique: true, required: true},
     isPaid: { type: Boolean, default: false },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     isAdmin: { type: Boolean, default: false }
 });
 
