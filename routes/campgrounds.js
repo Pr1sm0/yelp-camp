@@ -19,14 +19,31 @@ const geocoder = NodeGeocoder(options);
 
 //INDEX - show all campgrounds
 router.get("/", (req,res) => {
-    if(req.query.paid) res.locals.success = 'Payment succeeded, welcome to YelpCamp!';
-    Campground.find({}, (err, allCampgrounds) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render("campgrounds/index", {campgrounds: allCampgrounds, page: 'campgrounds'});
-        }
-    });
+    if(req.query.search) {
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        // Search campgrounds from DB
+        Campground.find({$or: [{name: regex,}, {location: regex}, {"author.username": regex}]}, function(err, allCampgrounds){
+           if(err){
+               console.log(err);
+           } else {
+              if(allCampgrounds.length < 1) {
+                req.flash("error", "Campground no found");
+                return res.redirect("back");
+              }
+              res.render("campgrounds/index",{campgrounds:allCampgrounds});
+           }
+        });
+    } else {
+        if(req.query.paid) res.locals.success = 'Payment succeeded, welcome to YelpCamp!';
+        // Get all campgrounds from DB
+        Campground.find({}, (err, allCampgrounds) => {
+            if(err){
+                console.log(err);
+            } else {
+                res.render("campgrounds/index", {campgrounds: allCampgrounds, page: 'campgrounds'});
+            }
+        });
+    }
 });
 
 //CREATE - add new campground to DB
@@ -126,6 +143,10 @@ router.delete("/:id", checkCampgroundOwnership, async(req, res) => {
       console.log(error.message);
       res.redirect("/campgrounds");
     }
-  });
+});
+
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 module.exports = router;
