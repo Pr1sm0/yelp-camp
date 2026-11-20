@@ -17,7 +17,7 @@
     "connect-flash": "^0.1.1",
     "ejs": "^3.1.10",
     "express": "^4.22.3",
-    "express-session": "^1.17.1",
+    "express-session": "^1.19.0",
     "locus": "^2.0.4",
     "method-override": "^3.0.0",
     "moment": "^2.31.0",
